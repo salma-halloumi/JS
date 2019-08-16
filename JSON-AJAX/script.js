@@ -4,8 +4,10 @@ var btn = document.getElementById("btn");
 btn.addEventListener("click", function() {
   var request = new XMLHttpRequest();
   request.onload = function() {
-    var response = JSON.parse(this.responseText);
-    renderHTML(response);
+    if (request.status >= 200 && request.status < 400) {
+      var response = JSON.parse(this.responseText);
+      renderHTML(response);
+    }
   };
   request.open(
     "GET",
@@ -13,6 +15,9 @@ btn.addEventListener("click", function() {
       pageCounter +
       ".json"
   );
+  request.onerror = function() {
+    console.log("error");
+  };
   request.send();
   pageCounter++;
   if (pageCounter > 3) {
@@ -32,7 +37,7 @@ function renderHTML(data) {
       s += tab1[j];
       if (tab1.length > 1) {
         if (j < tab1.length - 2) s += ", ";
-        else if (j == tab2.length - 2) s += " and ";
+        else if (j == tab1.length - 2) s += " and ";
       }
     }
     s += " and doesn't like to eat ";
